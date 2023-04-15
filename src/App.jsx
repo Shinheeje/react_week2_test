@@ -25,13 +25,6 @@ function App() {
     setTodo(removeTodo)
   }
 
-  const clickDoneRemoveHandler = (id) => {
-    const removeDone = done.filter((e) => {
-      return e.id !== id
-    })
-    setDone(removeDone)
-  }
-
   const clickAddHandler = () => {
     const newTodo = {
       id: todo.length + 1,
@@ -51,7 +44,7 @@ function App() {
       }
       return item;
     });
-    setTodo(newTodo);
+    setTodo(newTodo)
   }
 
   const clickCancelHandler = (id) => {
@@ -61,7 +54,7 @@ function App() {
       }
       return item;
     });
-    setTodo(newTodo);
+    setTodo(newTodo)
   }
 
   return (
@@ -118,7 +111,7 @@ function App() {
                   <h2>{item.title}</h2>
                   <p>{item.body}</p>
                   <div className='doneButton'>
-                    <button className='remove' onClick={() => clickDoneRemoveHandler(item.id)}>삭제하기</button>
+                    <button className='remove' onClick={() => clickTodoRemoveHandler(item.id)}>삭제하기</button>
                     <button onClick={() => clickCancelHandler(item.id)}>취소</button>
                   </div>
                 </div>
