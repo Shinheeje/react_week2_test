@@ -4,7 +4,7 @@ import './App.css';
 function App() {
 
   const [todo, setTodo] = useState([])
-
+  const [isdone, setIsdone] = useState(false)
   const [done, setDone] = useState([])
 
   const [title, setTitle] = useState('')
@@ -37,7 +37,7 @@ function App() {
       id: todo.length + 1,
       title: title,
       body: body,
-      isDone: false
+      isdone: false
     }
 
     setTodo([...todo, newTodo])
@@ -45,17 +45,23 @@ function App() {
 
 
   const clickcompleteHandler = (id) => {
-    const completedTodo = todo.find((e) => e.id === id);
-    const newTodo = todo.filter((e) => e.id !== id);
-    setDone([...done, completedTodo]);
+    const newTodo = todo.map(item => {
+      if (item.id === id) {
+        return { ...item, isdone: true };
+      }
+      return item;
+    });
     setTodo(newTodo);
   }
 
   const clickCancelHandler = (id) => {
-    const canceledTodo = done.find((e) => e.id === id);
-    const newDone = done.filter((e) => e.id !== id);
-    setTodo([...todo, canceledTodo]);
-    setDone(newDone);
+    const newTodo = todo.map(item => {
+      if (item.id === id) {
+        return { ...item, isdone: false };
+      }
+      return item;
+    });
+    setTodo(newTodo);
   }
 
   return (
@@ -81,7 +87,9 @@ function App() {
       <h1>Working.. 🔥</h1>
       <div className='working'>
         {
-          todo.map((item) => {
+          todo.filter((e) => {
+            return e.isdone === false
+          }).map((item) => {
             return (
               <div className='workingBox'>
                 <div className='workingBoxItem'>
@@ -101,7 +109,9 @@ function App() {
       <h1>Done..! 🎉</h1>
       <div className='done'>
         {
-          done.map((item) => {
+          todo.filter((e) => {
+            return e.isdone === true
+          }).map((item) => {
             return (
               <div className='doneBox'>
                 <div className='doneBoxItem'>
