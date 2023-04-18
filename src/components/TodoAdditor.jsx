@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import TodoSection from './TodoSection'
 
-function TodoAdditor(props) {
+function TodoAdditor() {
 
   const [todo, setTodo] = useState([])
 
@@ -75,14 +75,13 @@ function TodoAdditor(props) {
           </div>
           <button onClick={clickAddHandler}>추가하기</button>
         </div>
+        <TodoSection
+          clickTodoRemoveHandler={clickTodoRemoveHandler}
+          clickcompleteHandler={clickcompleteHandler}
+          clickCancelHandler={clickCancelHandler}
+          todo={todo}
+        />
       </div>
-
-      <TodoSection
-        clickTodoRemoveHandler={clickTodoRemoveHandler}
-        clickcompleteHandler={clickcompleteHandler}
-        clickCancelHandler={clickCancelHandler}
-        todo={todo}
-      />
     </>
   )
 }
