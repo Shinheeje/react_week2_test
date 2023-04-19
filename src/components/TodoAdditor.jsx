@@ -1,87 +1,119 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState } from 'react';
 import TodoSection from './TodoSection'
+import { useDispatch, useSelector } from 'react-redux';
+import { INPUT_VALUE } from '../redux/modules/myTodo';
+import styled from 'styled-components';
+import { dataSave } from '../redux/modules/myTodo';
+
+const Container = styled.div`
+  margin: 0 auto;
+  max-width: 1200px;
+  min-width: 800px;
+`
+const Top = styled.header`
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 0 20px;
+`
+
+const InputBoxWrap = styled.div`
+  height: 80px;
+  background-color: #eee;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+const InputBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`
+
+const InputBoxSpan = styled.span`
+  font-size: 18px;
+`
+const MainInput = styled.input`
+  width: 300px;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-right: 20px;
+  border: none;
+  border-radius: 14px;
+`
+
+const InputBoxWrapButton = styled.button`
+  width: 150px;
+  padding: 20px;
+  border: none;
+  border-radius: 14px;
+  background-color: rgb(165, 165, 208);
+  color: #fff;
+  font-weight: 900;
+  box-sizing: border-box;
+  cursor: pointer;
+`
 
 function TodoAdditor() {
 
-  const [todo, setTodo] = useState([])
+  const dispatch = useDispatch()
 
-  const [title, setTitle] = useState('')
-  const titleChangeHandler = (event) => {
-    setTitle(event.target.value)
-  }
+  const [state, setState] = useState({
+    title: '',
+    body: ''
+  })
 
-  const [body, setBody] = useState('')
-  const bodyChangeHandler = (event) => {
-    setBody(event.target.value)
-  }
-
-  const clickTodoRemoveHandler = (id) => {
-    const removeTodo = todo.filter((e) => {
-      return e.id !== id
+  const inputState = (event) => {
+    setState({
+      ...state,
+      [event.target.name]: event.target.value
     })
-
-    setTodo(removeTodo)
   }
+
+  const titleInput = useRef()
+  const bodyInput = useRef()
 
   const clickAddHandler = () => {
-    const newTodo = {
-      id: todo.length + 1,
-      title: title,
-      body: body,
-      isdone: false
+    if (state.title.length < 1) {
+      titleInput.current.focus()
+      return
     }
-
-    setTodo([...todo, newTodo])
-    setTitle('')
-    setBody('')
+    if (state.body.length < 1) {
+      bodyInput.current.focus()
+      return
+    }
+    dispatch(dataSave({
+      title: state.title,
+      body: state.body
+    }))
+    setState({
+      title: '',
+      body: ''
+    })
   }
-
-
-  const clickcompleteHandler = (id) => {
-    const newTodo = todo.map(item => {
-      if (item.id === id) {
-        return { ...item, isdone: true };
-      }
-      return item;
-    });
-    setTodo(newTodo)
-  }
-
-  const clickCancelHandler = (id) => {
-    const newTodo = todo.map(item => {
-      if (item.id === id) {
-        return { ...item, isdone: false };
-      }
-      return item;
-    });
-    setTodo(newTodo)
-  }
-
 
   return (
     <>
-      <div className='container'>
-        <header>
+      <Container>
+        <Top>
           <p>My Todo List</p>
           <p>React</p>
-        </header>
-        <div className='inputBox_wrap'>
-          <div className='inputBox'>
-            <span>제목</span>
-            <input value={title} onChange={titleChangeHandler} />
-            <span>내용</span>
-            <input value={body} onChange={bodyChangeHandler} />
-          </div>
-          <button onClick={clickAddHandler}>추가하기</button>
-        </div>
+        </Top>
+        <InputBoxWrap>
+          <InputBox>
+            <InputBoxSpan>제목</InputBoxSpan>
+            <MainInput id='title' ref={titleInput} name='title' value={state.title} onChange={inputState} />
+            <InputBoxSpan>내용</InputBoxSpan>
+            <MainInput id='body' ref={bodyInput} name='body' value={state.body} onChange={inputState} />
+          </InputBox>
+          <InputBoxWrapButton onClick={clickAddHandler}>추가하기</InputBoxWrapButton>
+        </InputBoxWrap>
         <TodoSection
-          clickTodoRemoveHandler={clickTodoRemoveHandler}
-          clickcompleteHandler={clickcompleteHandler}
-          clickCancelHandler={clickCancelHandler}
-          todo={todo}
         />
-      </div>
+      </Container>
     </>
   )
 }
